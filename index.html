@@ -45,7 +45,9 @@
     .liters{font-size:64px;font-weight:850;letter-spacing:-3px;line-height:1;margin:12px 0 8px}
     .liters span{font-size:27px;font-weight:700;letter-spacing:0}
     .sub{opacity:.9;font-size:15px}
-    .progress{height:10px;background:rgba(255,255,255,.24);border-radius:999px;margin-top:18px;overflow:hidden}
+    .progress-row{display:flex;align-items:center;gap:12px;margin-top:18px}
+    .progress{height:10px;background:rgba(255,255,255,.24);border-radius:999px;overflow:hidden;flex:1}
+    .progress-pct{min-width:46px;text-align:right;font-size:16px;font-weight:800;color:white}
     .progress > div{height:100%;background:white;border-radius:999px;transition:width .25s ease}
     .actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
     button.primary,button.secondary,button.danger{
@@ -100,7 +102,7 @@
       <div class="eyebrow">Verfügbare Liter</div>
       <div class="liters"><span id="remaining">150</span> <span>L</span></div>
       <div class="sub" id="monthLabel">Monatskontingent: 150 L</div>
-      <div class="progress"><div id="progressBar"></div></div>
+      <div class="progress-row"><div class="progress"><div id="progressBar"></div></div><div class="progress-pct" id="progressPct">100%</div></div>
     </section>
 
     <div class="actions">
@@ -113,7 +115,7 @@
       <div id="history"></div>
     </section>
 
-    <div class="foot">Daten werden nur auf diesem Gerät gespeichert.</div>
+    <div class="foot">Daten werden nur auf diesem Gerät gespeichert.<br><span style="display:inline-block;margin-top:6px">Made by Yannick</span></div>
   </div>
 
   <dialog id="fuelDialog">
@@ -195,6 +197,7 @@
       document.getElementById("monthLabel").textContent = `Monatskontingent: ${fmt(state.allowance)} L`;
       const pct = Math.max(0, Math.min(100, state.allowance ? (state.remaining/state.allowance)*100 : 0));
       document.getElementById("progressBar").style.width = pct + "%";
+      document.getElementById("progressPct").textContent = `${Math.round(pct)}%`;
       document.getElementById("resetText").textContent =
         `Der verfügbare Betrag wird auf ${fmt(state.allowance)} L zurückgesetzt.`;
 
