@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a84ff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="FuelCard" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <title>FuelCard</title>
+  <style>
+    :root{
+      --bg:#f3f5f8; --card:#ffffff; --text:#111318; --muted:#6f7680;
+      --accent:#0a84ff; --accent2:#0067d8; --danger:#ff3b30; --line:#e6e9ee;
+      --shadow:0 12px 34px rgba(0,0,0,.08);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b0d10; --card:#15181d; --text:#f5f7fa; --muted:#9ca4af;
+        --accent:#2997ff; --accent2:#0a84ff; --danger:#ff453a; --line:#2a2f36;
+        --shadow:0 14px 40px rgba(0,0,0,.28);
+      }
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
+      background:var(--bg); color:var(--text); min-height:100vh;
+      padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    }
+    .wrap{max-width:560px;margin:0 auto;padding:20px 16px 40px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;margin:8px 2px 18px}
+    .title{font-size:28px;font-weight:800;letter-spacing:-.5px}
+    .iconbtn{
+      border:0;background:var(--card);color:var(--text);border-radius:14px;
+      width:44px;height:44px;font-size:20px;box-shadow:var(--shadow)
+    }
+    .hero{
+      background:linear-gradient(145deg,var(--accent),var(--accent2));
+      color:white;border-radius:28px;padding:26px 24px;box-shadow:var(--shadow);
+      margin-bottom:18px;
+    }
+    .eyebrow{opacity:.82;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.8px}
+    .liters{font-size:64px;font-weight:850;letter-spacing:-3px;line-height:1;margin:12px 0 8px}
+    .liters span{font-size:27px;font-weight:700;letter-spacing:0}
+    .sub{opacity:.9;font-size:15px}
+    .progress{height:10px;background:rgba(255,255,255,.24);border-radius:999px;margin-top:18px;overflow:hidden}
+    .progress > div{height:100%;background:white;border-radius:999px;transition:width .25s ease}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+    button.primary,button.secondary,button.danger{
+      border:0;border-radius:18px;padding:17px 14px;font-size:17px;font-weight:760;
+      cursor:pointer;
+    }
+    button.primary{background:var(--accent);color:white}
+    button.secondary{background:var(--card);color:var(--text);box-shadow:var(--shadow)}
+    button.danger{background:var(--danger);color:white;width:100%}
+    .card{background:var(--card);border-radius:22px;padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
+    .card h2{font-size:18px;margin:0 0 14px}
+    .history-item{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+    .history-item:last-child{border-bottom:0}
+    .history-main{font-weight:700}
+    .history-sub{font-size:13px;color:var(--muted);margin-top:4px}
+    .history-right{text-align:right;font-weight:800}
+    .empty{color:var(--muted);font-size:14px;padding:10px 0}
+    dialog{
+      border:0;border-radius:24px;background:var(--card);color:var(--text);
+      padding:0;max-width:420px;width:calc(100% - 32px);box-shadow:0 24px 70px rgba(0,0,0,.32)
+    }
+    dialog::backdrop{background:rgba(0,0,0,.42);backdrop-filter:blur(3px)}
+    .modal{padding:22px}
+    .modal h3{margin:0 0 8px;font-size:22px}
+    .modal p{color:var(--muted);margin:0 0 18px;line-height:1.4}
+    input{
+      width:100%;font-size:22px;padding:14px 15px;border-radius:14px;border:1px solid var(--line);
+      background:var(--bg);color:var(--text);outline:none;margin-bottom:14px
+    }
+    .modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .small{font-size:13px;color:var(--muted);margin-top:10px}
+    .settings-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:12px 0}
+    .settings-row label{font-weight:700}
+    .settings-row input{width:120px;margin:0;font-size:18px}
+    .toast{
+      position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(30px);
+      background:#111;color:#fff;padding:12px 16px;border-radius:999px;opacity:0;pointer-events:none;
+      transition:.22s ease;font-weight:700;z-index:20
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .foot{font-size:12px;color:var(--muted);text-align:center;margin-top:18px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="title">FuelCard ⛽</div>
+      <button class="iconbtn" id="settingsBtn" aria-label="Einstellungen">⚙️</button>
+    </div>
+
+    <section class="hero">
+      <div class="eyebrow">Verfügbare Liter</div>
+      <div class="liters"><span id="remaining">150</span> <span>L</span></div>
+      <div class="sub" id="monthLabel">Monatskontingent: 150 L</div>
+      <div class="progress"><div id="progressBar"></div></div>
+    </section>
+
+    <div class="actions">
+      <button class="primary" id="fuelBtn">⛽ Tanken</button>
+      <button class="secondary" id="resetBtn">↻ Monatsreset</button>
+    </div>
+
+    <section class="card">
+      <h2>Tankhistorie</h2>
+      <div id="history"></div>
+    </section>
+
+    <div class="foot">Daten werden nur auf diesem Gerät gespeichert.</div>
+  </div>
+
+  <dialog id="fuelDialog">
+    <div class="modal">
+      <h3>⛽ Tanken</h3>
+      <p>Wie viele Liter hast du getankt?</p>
+      <input id="fuelInput" type="number" inputmode="decimal" min="0.1" step="0.1" placeholder="z. B. 32,5" />
+      <div class="modal-actions">
+        <button class="secondary" data-close="fuelDialog">Abbrechen</button>
+        <button class="primary" id="confirmFuel">Speichern</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="resetDialog">
+    <div class="modal">
+      <h3>Monatsreset?</h3>
+      <p id="resetText">Der verfügbare Betrag wird auf 150 L zurückgesetzt.</p>
+      <div class="modal-actions">
+        <button class="secondary" data-close="resetDialog">Abbrechen</button>
+        <button class="danger" id="confirmReset">Zurücksetzen</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="settingsDialog">
+    <div class="modal">
+      <h3>⚙️ Einstellungen</h3>
+      <div class="settings-row">
+        <label for="allowanceInput">Monatslimit</label>
+        <input id="allowanceInput" type="number" min="1" step="1" />
+      </div>
+      <p class="small">Eine Änderung des Monatslimits setzt den aktuellen Stand nicht automatisch zurück.</p>
+      <div class="modal-actions">
+        <button class="secondary" data-close="settingsDialog">Abbrechen</button>
+        <button class="primary" id="saveSettings">Speichern</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const KEY = "fuelcard_state_v1";
+    const defaultState = { allowance:150, remaining:150, monthKey:null, history:[] };
+
+    function currentMonthKey(){
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+    }
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(KEY);
+        return raw ? {...defaultState, ...JSON.parse(raw)} : {...defaultState};
+      }catch{ return {...defaultState}; }
+    }
+    function saveState(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+    function fmt(n){
+      return Number.isInteger(n) ? String(n) : n.toFixed(1).replace(".",",");
+    }
+    function autoResetIfNeeded(){
+      const mk = currentMonthKey();
+      if(!state.monthKey){
+        state.monthKey = mk;
+        saveState();
+        return;
+      }
+      if(state.monthKey !== mk){
+        state.remaining = state.allowance;
+        state.monthKey = mk;
+        state.history.unshift({
+          type:"reset", liters:state.allowance, date:new Date().toISOString(), automatic:true
+        });
+        saveState();
+      }
+    }
+    function render(){
+      document.getElementById("remaining").textContent = fmt(state.remaining);
+      document.getElementById("monthLabel").textContent = `Monatskontingent: ${fmt(state.allowance)} L`;
+      const pct = Math.max(0, Math.min(100, state.allowance ? (state.remaining/state.allowance)*100 : 0));
+      document.getElementById("progressBar").style.width = pct + "%";
+      document.getElementById("resetText").textContent =
+        `Der verfügbare Betrag wird auf ${fmt(state.allowance)} L zurückgesetzt.`;
+
+      const history = document.getElementById("history");
+      if(!state.history.length){
+        history.innerHTML = '<div class="empty">Noch keine Tankvorgänge gespeichert.</div>';
+        return;
+      }
+      history.innerHTML = state.history.slice(0,50).map(item=>{
+        const d = new Date(item.date);
+        const dateText = new Intl.DateTimeFormat("de-DE",{dateStyle:"medium",timeStyle:"short"}).format(d);
+        if(item.type === "reset"){
+          return `<div class="history-item">
+            <div><div class="history-main">↻ ${item.automatic ? "Automatischer" : "Manueller"} Monatsreset</div>
+            <div class="history-sub">${dateText}</div></div>
+            <div class="history-right">${fmt(item.liters)} L</div>
+          </div>`;
+        }
+        return `<div class="history-item">
+          <div><div class="history-main">⛽ Getankt</div><div class="history-sub">${dateText}</div></div>
+          <div class="history-right">−${fmt(item.liters)} L<br><span class="history-sub">${fmt(item.remainingAfter)} L übrig</span></div>
+        </div>`;
+      }).join("");
+    }
+    function toast(msg){
+      const el = document.getElementById("toast");
+      el.textContent = msg; el.classList.add("show");
+      setTimeout(()=>el.classList.remove("show"),1800);
+    }
+
+    let state = loadState();
+    autoResetIfNeeded();
+    render();
+
+    const fuelDialog = document.getElementById("fuelDialog");
+    const resetDialog = document.getElementById("resetDialog");
+    const settingsDialog = document.getElementById("settingsDialog");
+
+    document.getElementById("fuelBtn").onclick = ()=>{
+      document.getElementById("fuelInput").value = "";
+      fuelDialog.showModal();
+      setTimeout(()=>document.getElementById("fuelInput").focus(),50);
+    };
+    document.getElementById("confirmFuel").onclick = ()=>{
+      const raw = document.getElementById("fuelInput").value.replace(",",".");
+      const liters = Number(raw);
+      if(!Number.isFinite(liters) || liters <= 0){ toast("Bitte gültige Liter eingeben."); return; }
+      state.remaining = Math.max(0, +(state.remaining - liters).toFixed(1));
+      state.history.unshift({type:"fuel", liters:+liters.toFixed(1), remainingAfter:state.remaining, date:new Date().toISOString()});
+      saveState(); render(); fuelDialog.close();
+      toast(`Noch ${fmt(state.remaining)} L verfügbar`);
+    };
+    document.getElementById("resetBtn").onclick = ()=> resetDialog.showModal();
+    document.getElementById("confirmReset").onclick = ()=>{
+      state.remaining = state.allowance;
+      state.monthKey = currentMonthKey();
+      state.history.unshift({type:"reset", liters:state.allowance, date:new Date().toISOString(), automatic:false});
+      saveState(); render(); resetDialog.close();
+      toast(`Auf ${fmt(state.allowance)} L zurückgesetzt`);
+    };
+    document.getElementById("settingsBtn").onclick = ()=>{
+      document.getElementById("allowanceInput").value = state.allowance;
+      settingsDialog.showModal();
+    };
+    document.getElementById("saveSettings").onclick = ()=>{
+      const val = Number(document.getElementById("allowanceInput").value);
+      if(!Number.isFinite(val) || val <= 0){ toast("Bitte gültiges Monatslimit eingeben."); return; }
+      state.allowance = +val.toFixed(1);
+      saveState(); render(); settingsDialog.close();
+      toast("Monatslimit gespeichert");
+    };
+
+    document.querySelectorAll("[data-close]").forEach(btn=>{
+      btn.addEventListener("click",()=>document.getElementById(btn.dataset.close).close());
+    });
+
+    if("serviceWorker" in navigator){
+      window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));
+    }
+  </script>
+</body>
+</html>
