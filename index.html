@@ -1,390 +1,118 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#5b3df5" />
+  <meta name="theme-color" content="#06111f" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="FuelCard" />
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
   <title>FuelCard</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
   <style>
-    :root{
-      --bg:#f3f5f8; --card:#ffffff; --text:#111318; --muted:#6f7680;
-      --accent:#1688ff; --accent2:#5b3df5; --accent3:#b329ff;
-      --danger:#ff3b30; --line:#e6e9ee; --shadow:0 12px 34px rgba(0,0,0,.08);
-    }
-    @media (prefers-color-scheme: dark){
-      :root{
-        --bg:#0b0d10; --card:#15181d; --text:#f5f7fa; --muted:#9ca4af;
-        --accent:#29a0ff; --accent2:#7557ff; --accent3:#c33cff;
-        --danger:#ff453a; --line:#2a2f36; --shadow:0 14px 40px rgba(0,0,0,.28);
-      }
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
-      background:var(--bg);color:var(--text);min-height:100vh;
-      padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
-    }
-    .wrap{max-width:560px;margin:0 auto;padding:20px 16px 40px}
-    .topbar{display:flex;align-items:center;justify-content:space-between;margin:8px 2px 18px}
-    .title{font-size:28px;font-weight:800;letter-spacing:-.5px}
-    .iconbtn{
-      border:0;background:var(--card);color:var(--text);border-radius:14px;
-      width:44px;height:44px;font-size:20px;box-shadow:var(--shadow)
-    }
-    .hero{
-      background:linear-gradient(145deg,var(--accent) 0%,var(--accent2) 62%,var(--accent3) 100%);
-      color:white;border-radius:28px;padding:26px 24px;box-shadow:var(--shadow);margin-bottom:18px;
-    }
-    .eyebrow{opacity:.84;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.8px}
-    .liters{font-size:64px;font-weight:850;letter-spacing:-3px;line-height:1;margin:12px 0 8px}
-    .liters span{font-size:27px;font-weight:700;letter-spacing:0}
-    .sub{opacity:.92;font-size:15px}
-    .date-line{opacity:.82;font-size:13px;margin-top:7px;line-height:1.35}
-    .progress-row{display:flex;align-items:center;gap:12px;margin-top:18px}
-    .progress{height:10px;background:rgba(255,255,255,.25);border-radius:999px;overflow:hidden;flex:1}
-    .progress-pct{min-width:46px;text-align:right;font-size:16px;font-weight:800;color:white}
-    .progress>div{height:100%;background:white;border-radius:999px;transition:width .25s ease}
-    .actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
-    button.primary,button.secondary,button.danger{
-      border:0;border-radius:18px;padding:17px 14px;font-size:17px;font-weight:760;cursor:pointer;
-    }
-    button.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
-    button.secondary{background:var(--card);color:var(--text);box-shadow:var(--shadow)}
-    button.danger{background:var(--danger);color:white;width:100%}
-    .card{background:var(--card);border-radius:22px;padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
-    .card h2{font-size:18px;margin:0 0 14px}
-    .history-item{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
-    .history-item:last-child{border-bottom:0}
-    .history-main{font-weight:700}.history-sub{font-size:13px;color:var(--muted);margin-top:4px}
-    .history-right{text-align:right;font-weight:800}.empty{color:var(--muted);font-size:14px;padding:10px 0}
-    dialog{
-      border:0;border-radius:24px;background:var(--card);color:var(--text);padding:0;
-      max-width:420px;width:calc(100% - 32px);box-shadow:0 24px 70px rgba(0,0,0,.32)
-    }
-    dialog::backdrop{background:rgba(0,0,0,.42);backdrop-filter:blur(3px)}
-    .modal{padding:22px}.modal h3{margin:0 0 8px;font-size:22px}
-    .modal p{color:var(--muted);margin:0 0 18px;line-height:1.4}
-    input,select{
-      width:100%;font-size:18px;padding:13px 14px;border-radius:14px;border:1px solid var(--line);
-      background:var(--bg);color:var(--text);outline:none;
-    }
-    #fuelInput{font-size:22px;margin-bottom:14px}
-    .modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .small{font-size:13px;color:var(--muted);margin-top:10px}
-    .settings-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:14px 0}
-    .settings-row label{font-weight:700;min-width:120px}
-    .settings-row input,.settings-row select{width:160px;margin:0}
-    .toast{
-      position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(30px);
-      background:#111;color:#fff;padding:12px 16px;border-radius:999px;opacity:0;pointer-events:none;
-      transition:.22s ease;font-weight:700;z-index:20;white-space:nowrap
-    }
-    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    .foot{font-size:12px;color:var(--muted);text-align:center;margin-top:18px;line-height:1.6}
-    .made{font-weight:700;opacity:.78}
+    :root{--bg:#06111f;--bg2:#081827;--card:#0d1b2a;--card2:#101f30;--line:#203247;--text:#f7fbff;--muted:#9eb0c3;--cyan:#19c9ff;--blue:#1678ff;--violet:#6b37ff;--pink:#d313e7;--green:#56e0a3;--danger:#ff6178}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;min-height:100%;background:radial-gradient(circle at top,#0a1c30 0,#06111f 45%,#040b13 100%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif}
+    body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+    button,input,select{font:inherit}
+    .app{max-width:520px;margin:0 auto;min-height:100vh;padding:22px 18px 28px}
+    .screen{display:none}.screen.active{display:block}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:18px}
+    .title h1{font-size:34px;line-height:1.05;margin:0;font-weight:800;letter-spacing:-.8px}.subtitle{color:var(--muted);font-size:16px;margin-top:6px}
+    .iconbtn{border:1px solid #29415d;background:linear-gradient(135deg,#082a4c,#171937);color:#fff;border-radius:14px;padding:12px 14px;font-weight:650;display:flex;gap:8px;align-items:center}
+    .hero{position:relative;overflow:hidden;border:1px solid rgba(81,195,255,.55);border-radius:18px;padding:24px 22px;background:linear-gradient(135deg,#10c9ee 0%,#116cf8 48%,#6a2df4 72%,#d00cc6 100%);box-shadow:0 16px 34px rgba(35,65,255,.18)}
+    .hero:after{content:"";position:absolute;inset:-30% -20% auto auto;width:250px;height:250px;background:radial-gradient(circle,rgba(255,255,255,.18),transparent 65%);pointer-events:none}
+    .hero-label{font-size:20px;font-weight:700}.remaining{font-size:58px;font-weight:850;letter-spacing:-2px;margin:8px 0 5px}.pct{font-size:26px;font-weight:700}
+    .ring{position:absolute;right:24px;top:28px;width:112px;height:112px;border-radius:50%;background:conic-gradient(#59efff calc(var(--p)*1%),rgba(255,255,255,.26) 0);padding:12px;display:grid;place-items:center}.ring:before{content:"";position:absolute;inset:12px;border-radius:50%;background:#1930b9}.ring img{position:relative;width:56px;height:56px;border-radius:12px}
+    .primary{width:100%;border:0;border-radius:14px;padding:17px 18px;margin:16px 0 22px;color:#fff;font-size:20px;font-weight:800;background:linear-gradient(90deg,#12bcff,#1479ff 45%,#7430ff 74%,#d40cc8);box-shadow:0 12px 26px rgba(50,65,255,.18)}
+    h2{font-size:19px;margin:0 0 12px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:linear-gradient(180deg,rgba(15,31,48,.96),rgba(9,24,38,.96));border:1px solid var(--line);border-radius:16px;padding:16px}.metric{text-align:center}.metric .label{color:#c4d0dc;font-size:14px}.metric .value{font-size:25px;font-weight:800;margin-top:6px}
+    .datecard{display:grid;grid-template-columns:1fr 1fr;margin-top:12px;gap:0}.dateitem{display:flex;gap:10px;align-items:center;min-height:72px}.dateitem+ .dateitem{border-left:1px solid var(--line);padding-left:16px}.dateitem small{color:#b8c6d4;display:block;margin-bottom:3px}.dateitem b{font-size:17px}.dateitem .blue{color:#21a8ff;margin-top:4px;font-size:14px}
+    .history{margin-top:22px}.history-list{display:flex;flex-direction:column;gap:10px}.hist{display:flex;align-items:center;justify-content:space-between;gap:12px}.hist-main{display:flex;gap:12px;align-items:center}.hist-icon{width:38px;height:38px;border:1px solid #39506a;border-radius:50%;display:grid;place-items:center;color:#d7e6f6}.hist-title{font-weight:700}.hist-sub{font-size:13px;color:var(--muted);margin-top:3px}.hist-val{font-weight:800}.empty{color:var(--muted);font-size:14px}
+    .footer{text-align:center;color:#b4c0cd;margin:28px 0 4px;font-size:14px}.heart{color:#d43af0;font-size:19px}
+    .backbar{display:flex;align-items:center;gap:16px;border-bottom:1px solid #1c2b3b;padding-bottom:18px;margin-bottom:18px}.back{font-size:32px;background:none;border:0;color:#19bfff;padding:0}.backbar h1{font-size:27px;margin:0}
+    .section{margin-bottom:14px}.section-title{font-size:17px;font-weight:800;margin:0 0 10px}.fieldlabel{text-align:center;font-size:18px;font-weight:700;margin:8px 0 16px}.inputwrap{display:flex;align-items:center;border:1px solid #3c5d82;border-radius:12px;background:#0b1826;padding:0 14px}.inputwrap input,.inputwrap select{width:100%;background:transparent;border:0;outline:0;color:#fff;padding:14px 0;font-size:24px;font-weight:700}.unit{color:#c2d0db;font-size:18px}.muted{color:var(--muted)}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.secondary,.save{border:0;border-radius:12px;padding:15px;font-weight:750;color:#fff}.secondary{background:#172639}.save{background:linear-gradient(90deg,#1598ff,#6c2eff,#d30bc8)}
+    .preview{margin-top:14px;text-align:center}.preview h3{font-size:16px}.previewgrid{display:grid;grid-template-columns:1fr 1fr}.previewgrid>div+div{border-left:1px solid #294057}.preview .big{font-size:27px;color:var(--green);font-weight:850}
+    .notice{display:flex;gap:12px;align-items:flex-start;margin-top:14px}.notice .i{color:#20bfff;font-size:24px}.notice b{display:block;margin-bottom:5px}
+    .option{display:flex;justify-content:space-between;align-items:center;border:1px solid #334a63;border-radius:12px;padding:14px;margin-top:10px}.option.active{border-color:#a438ff;box-shadow:inset 0 0 0 1px #0ebcff;background:linear-gradient(90deg,rgba(18,150,255,.08),rgba(208,12,200,.08))}.radio{width:20px;height:20px;border-radius:50%;border:2px solid #5f7286}.option.active .radio{border:6px solid #7c48ff;background:#19bfff}.about{display:flex;gap:12px;align-items:center}.about img{width:52px;height:52px;border-radius:13px}.about .name{color:#6e9fff;font-weight:800}.row{display:flex;gap:12px;align-items:flex-start}.row+.row{margin-top:18px}.row .ico{font-size:24px;width:32px}.divider{height:1px;background:#1f3043;margin:14px 0}.dangerBtn{width:100%;border:1px solid #744052;background:#29151e;color:#ff9daf;padding:13px;border-radius:12px;font-weight:750}
+    .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;transition:.25s;background:#142438;border:1px solid #38536d;color:#fff;padding:12px 16px;border-radius:12px;max-width:90%;z-index:20}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.58);padding:20px;z-index:50}.modal.show{display:flex}.modalbox{max-width:420px;width:100%;background:#0b1826;border:1px solid #31455b;border-radius:18px;padding:20px;box-shadow:0 25px 80px rgba(0,0,0,.45)}.modalbox h3{margin:0 0 8px;font-size:22px}.modalbox p{color:#c3cfdb;line-height:1.45}.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}.modal-actions button{border:0;border-radius:10px;padding:11px 14px;font-weight:700}.ok{background:linear-gradient(90deg,#178aff,#7d32ff);color:#fff}.cancel{background:#1c2b3b;color:#fff}
+    @media(max-width:390px){.remaining{font-size:50px}.ring{width:96px;height:96px;right:18px}.ring img{width:48px;height:48px}.app{padding-left:14px;padding-right:14px}}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="title">FuelCard ⛽</div>
-      <button class="iconbtn" id="settingsBtn" aria-label="Einstellungen">⚙️</button>
-    </div>
+<div class="app">
+  <main id="home" class="screen active">
+    <div class="topbar"><div class="title"><h1>FuelCard</h1><div class="subtitle" data-i="subtitle">Deine Tankkarte im Blick</div></div><button class="iconbtn" id="openSettings">⚙ <span data-i="settings">Einstellungen</span></button></div>
+    <section class="hero"><div class="hero-label" data-i="available">Verfügbare Liter</div><div class="remaining"><span id="remaining">150</span> L</div><div class="pct"><span id="percent">100</span> %</div><div class="ring" id="ring"><img src="./icon-192.png" alt="FuelCard"></div></section>
+    <button class="primary" id="openFuel">⛽ <span data-i="fuel">Tanken</span></button>
+    <h2 data-i="monthOverview">Monatsübersicht</h2>
+    <div class="grid2"><div class="card metric"><div class="label" data-i="monthlyLimit">Monatslimit</div><div class="value"><span id="allowance">150</span> L</div></div><div class="card metric"><div class="label" data-i="used">Verbraucht</div><div class="value"><span id="used">0</span> L</div></div></div>
+    <div class="card datecard"><div class="dateitem"><div>🗓️</div><div><small data-i="today">Heute</small><b id="todayDate"></b></div></div><div class="dateitem"><div>🔄</div><div><small data-i="nextReset">Nächster Reset</small><b id="resetDate"></b><div class="blue" id="daysLeft"></div></div></div>
+    <section class="history"><h2 data-i="history">Tankhistorie</h2><div class="history-list" id="historyList"></div></section>
+    <div class="footer">Made by Yannick <span class="heart">♡</span></div>
+  </main>
 
-    <section class="hero">
-      <div class="eyebrow" id="availableLabel">Verfügbare Liter</div>
-      <div class="liters"><span id="remaining">150</span> <span>L</span></div>
-      <div class="sub" id="monthLabel">Monatskontingent: 150 L</div>
-      <div class="date-line" id="dateLine"></div>
-      <div class="progress-row">
-        <div class="progress"><div id="progressBar"></div></div>
-        <div class="progress-pct" id="progressPct">100%</div>
-      </div>
-    </section>
+  <main id="fuelScreen" class="screen">
+    <div class="backbar"><button class="back" data-back>‹</button><h1 data-i="fuel">Tanken</h1></div>
+    <div class="card"><div class="fieldlabel" data-i="howMuch">Wie viel Liter hast du getankt?</div><div class="inputwrap"><input id="fuelInput" type="number" min="0" step="0.1" inputmode="decimal" placeholder="0"><span class="unit">L</span></div><p class="muted"><span data-i="currentlyAvailable">Verfügbare Liter</span>: <b><span id="availableBefore">150</span> L</b></p><div class="actions"><button class="secondary" data-back data-i="cancel">Abbrechen</button><button class="save" id="saveFuel" data-i="save">Speichern</button></div></div>
+    <div class="card preview"><h3 data-i="previewTitle">Neue Übersicht nach dem Tanken</h3><div class="previewgrid"><div><div class="muted" data-i="availableShort">Verfügbar</div><div class="big"><span id="previewRemaining">150</span> L</div></div><div><div class="muted" data-i="percent">Prozent</div><div class="big"><span id="previewPercent">100</span> %</div></div></div></div>
+    <div class="card notice"><div class="i">ⓘ</div><div><b data-i="hint">Hinweis</b><span id="resetHint"></span></div></div>
+    <div class="footer">Made by Yannick <span class="heart">♡</span></div>
+  </main>
 
-    <div class="actions">
-      <button class="primary" id="fuelBtn">⛽ Tanken</button>
-      <button class="secondary" id="resetBtn">↻ Monatsreset</button>
-    </div>
-
-    <section class="card">
-      <h2 id="historyTitle">Tankhistorie</h2>
-      <div id="history"></div>
-    </section>
-
-    <div class="foot">
-      <span id="privacyText">Daten werden nur auf diesem Gerät gespeichert.</span><br>
-      <span class="made">Made by Yannick</span>
-    </div>
-  </div>
-
-  <dialog id="fuelDialog">
-    <div class="modal">
-      <h3 id="fuelDialogTitle">⛽ Tanken</h3>
-      <p id="fuelQuestion">Wie viele Liter hast du getankt?</p>
-      <input id="fuelInput" type="number" inputmode="decimal" min="0.1" step="0.1" placeholder="z. B. 32,5" />
-      <div class="modal-actions">
-        <button class="secondary" data-close="fuelDialog" id="fuelCancel">Abbrechen</button>
-        <button class="primary" id="confirmFuel">Speichern</button>
-      </div>
-    </div>
-  </dialog>
-
-  <dialog id="resetDialog">
-    <div class="modal">
-      <h3 id="resetTitle">Monatsreset?</h3>
-      <p id="resetText"></p>
-      <div class="modal-actions">
-        <button class="secondary" data-close="resetDialog" id="resetCancel">Abbrechen</button>
-        <button class="danger" id="confirmReset">Zurücksetzen</button>
-      </div>
-    </div>
-  </dialog>
-
-  <dialog id="settingsDialog">
-    <div class="modal">
-      <h3 id="settingsTitle">⚙️ Einstellungen</h3>
-
-      <div class="settings-row">
-        <label for="allowanceInput" id="allowanceLabel">Monatslimit</label>
-        <input id="allowanceInput" type="number" min="1" step="1" />
-      </div>
-
-      <div class="settings-row">
-        <label for="langSelect" id="languageLabel">Sprache</label>
-        <select id="langSelect">
-          <option value="de">Deutsch</option>
-          <option value="fr">Français</option>
-        </select>
-      </div>
-
-      <p class="small" id="settingsNote">Eine Änderung des Monatslimits setzt den aktuellen Stand nicht automatisch zurück.</p>
-      <div class="modal-actions">
-        <button class="secondary" data-close="settingsDialog" id="settingsCancel">Abbrechen</button>
-        <button class="primary" id="saveSettings">Speichern</button>
-      </div>
-    </div>
-  </dialog>
-
-  <div class="toast" id="toast"></div>
-
-  <script>
-    const KEY = "fuelcard_state_v1";
-    const defaultState = { allowance:150, remaining:150, monthKey:null, history:[], lang:"de" };
-
-    const I18N = {
-      de: {
-        available:"Verfügbare Liter", monthly:"Monatskontingent", today:"Heute",
-        nextReset:"Nächster Reset", inDays:"noch {n} Tage", inDay:"noch 1 Tag",
-        fuel:"⛽ Tanken", reset:"↻ Monatsreset", history:"Tankhistorie",
-        noHistory:"Noch keine Tankvorgänge gespeichert.", fueled:"⛽ Getankt",
-        autoReset:"Automatischer Monatsreset", manualReset:"Manueller Monatsreset",
-        left:"L übrig", settings:"⚙️ Einstellungen", allowance:"Monatslimit",
-        language:"Sprache", settingsNote:"Eine Änderung des Monatslimits setzt den aktuellen Stand nicht automatisch zurück.",
-        cancel:"Abbrechen", save:"Speichern", fuelQuestion:"Wie viele Liter hast du getankt?",
-        resetTitle:"Monatsreset?", resetText:"Der verfügbare Betrag wird auf {n} L zurückgesetzt.",
-        resetConfirm:"Zurücksetzen", invalid:"Bitte gültige Liter eingeben.",
-        availableToast:"Noch {n} L verfügbar", resetToast:"Auf {n} L zurückgesetzt",
-        settingsSaved:"Einstellungen gespeichert", privacy:"Daten werden nur auf diesem Gerät gespeichert."
-      },
-      fr: {
-        available:"Litres disponibles", monthly:"Quota mensuel", today:"Aujourd’hui",
-        nextReset:"Prochaine remise à zéro", inDays:"encore {n} jours", inDay:"encore 1 jour",
-        fuel:"⛽ Faire le plein", reset:"↻ Remise à zéro", history:"Historique des pleins",
-        noHistory:"Aucun plein enregistré pour le moment.", fueled:"⛽ Plein effectué",
-        autoReset:"Remise à zéro automatique", manualReset:"Remise à zéro manuelle",
-        left:"L restants", settings:"⚙️ Réglages", allowance:"Quota mensuel",
-        language:"Langue", settingsNote:"Modifier le quota mensuel ne réinitialise pas automatiquement le solde actuel.",
-        cancel:"Annuler", save:"Enregistrer", fuelQuestion:"Combien de litres avez-vous pris ?",
-        resetTitle:"Remise à zéro mensuelle ?", resetText:"Le solde disponible sera remis à {n} L.",
-        resetConfirm:"Réinitialiser", invalid:"Veuillez saisir un nombre de litres valide.",
-        availableToast:"Encore {n} L disponibles", resetToast:"Remis à {n} L",
-        settingsSaved:"Réglages enregistrés", privacy:"Les données sont enregistrées uniquement sur cet appareil."
-      }
-    };
-
-    function t(key){ return (I18N[state.lang] || I18N.de)[key] || key; }
-    function currentMonthKey(){
-      const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
-    }
-    function nextResetDate(){
-      const d = new Date();
-      return new Date(d.getFullYear(), d.getMonth()+1, 1, 0, 0, 0, 0);
-    }
-    function loadState(){
-      try{
-        const raw = localStorage.getItem(KEY);
-        return raw ? {...defaultState, ...JSON.parse(raw)} : {...defaultState};
-      }catch{ return {...defaultState}; }
-    }
-    function saveState(){ localStorage.setItem(KEY, JSON.stringify(state)); }
-    function fmt(n){
-      const locale = state.lang === "fr" ? "fr-FR" : "de-DE";
-      return new Intl.NumberFormat(locale,{maximumFractionDigits:1}).format(n);
-    }
-    function formatDate(d){
-      const locale = state.lang === "fr" ? "fr-FR" : "de-DE";
-      return new Intl.DateTimeFormat(locale,{day:"2-digit",month:"2-digit",year:"numeric"}).format(d);
-    }
-    function daysUntilReset(){
-      const now = new Date();
-      const today = new Date(now.getFullYear(),now.getMonth(),now.getDate());
-      return Math.max(0, Math.ceil((nextResetDate()-today)/86400000));
-    }
-    function autoResetIfNeeded(){
-      const mk = currentMonthKey();
-      if(!state.monthKey){
-        state.monthKey = mk;
-        saveState();
-        return false;
-      }
-      if(state.monthKey !== mk){
-        state.remaining = state.allowance;
-        state.monthKey = mk;
-        state.history.unshift({
-          type:"reset", liters:state.allowance, date:new Date().toISOString(), automatic:true
-        });
-        saveState();
-        return true;
-      }
-      return false;
-    }
-    function render(){
-      document.documentElement.lang = state.lang;
-      document.getElementById("availableLabel").textContent = t("available");
-      document.getElementById("remaining").textContent = fmt(state.remaining);
-      document.getElementById("monthLabel").textContent = `${t("monthly")}: ${fmt(state.allowance)} L`;
-
-      const days = daysUntilReset();
-      const dayText = days === 1 ? t("inDay") : t("inDays").replace("{n}",days);
-      document.getElementById("dateLine").textContent =
-        `${t("today")}: ${formatDate(new Date())} · ${t("nextReset")}: ${formatDate(nextResetDate())} (${dayText})`;
-
-      const pct = Math.max(0,Math.min(100,state.allowance ? (state.remaining/state.allowance)*100 : 0));
-      document.getElementById("progressBar").style.width = pct+"%";
-      document.getElementById("progressPct").textContent = `${Math.round(pct)}%`;
-
-      document.getElementById("fuelBtn").textContent = t("fuel");
-      document.getElementById("resetBtn").textContent = t("reset");
-      document.getElementById("historyTitle").textContent = t("history");
-      document.getElementById("privacyText").textContent = t("privacy");
-      document.getElementById("settingsBtn").setAttribute("aria-label",t("settings"));
-
-      document.getElementById("fuelDialogTitle").textContent = t("fuel");
-      document.getElementById("fuelQuestion").textContent = t("fuelQuestion");
-      document.getElementById("fuelCancel").textContent = t("cancel");
-      document.getElementById("confirmFuel").textContent = t("save");
-
-      document.getElementById("resetTitle").textContent = t("resetTitle");
-      document.getElementById("resetText").textContent = t("resetText").replace("{n}",fmt(state.allowance));
-      document.getElementById("resetCancel").textContent = t("cancel");
-      document.getElementById("confirmReset").textContent = t("resetConfirm");
-
-      document.getElementById("settingsTitle").textContent = t("settings");
-      document.getElementById("allowanceLabel").textContent = t("allowance");
-      document.getElementById("languageLabel").textContent = t("language");
-      document.getElementById("settingsNote").textContent = t("settingsNote");
-      document.getElementById("settingsCancel").textContent = t("cancel");
-      document.getElementById("saveSettings").textContent = t("save");
-
-      const history = document.getElementById("history");
-      if(!state.history.length){
-        history.innerHTML = `<div class="empty">${t("noHistory")}</div>`;
-        return;
-      }
-      const locale = state.lang === "fr" ? "fr-FR" : "de-DE";
-      history.innerHTML = state.history.slice(0,50).map(item=>{
-        const d = new Date(item.date);
-        const dateText = new Intl.DateTimeFormat(locale,{dateStyle:"medium",timeStyle:"short"}).format(d);
-        if(item.type === "reset"){
-          return `<div class="history-item">
-            <div><div class="history-main">↻ ${item.automatic ? t("autoReset") : t("manualReset")}</div>
-            <div class="history-sub">${dateText}</div></div>
-            <div class="history-right">${fmt(item.liters)} L</div>
-          </div>`;
-        }
-        return `<div class="history-item">
-          <div><div class="history-main">${t("fueled")}</div><div class="history-sub">${dateText}</div></div>
-          <div class="history-right">−${fmt(item.liters)} L<br><span class="history-sub">${fmt(item.remainingAfter)} ${t("left")}</span></div>
-        </div>`;
-      }).join("");
-    }
-    function toast(msg){
-      const el=document.getElementById("toast");
-      el.textContent=msg;el.classList.add("show");
-      setTimeout(()=>el.classList.remove("show"),1800);
-    }
-    function checkMonth(){
-      if(autoResetIfNeeded()) render();
-      else {
-        // Datum/Countdown auch aktualisieren, wenn die App länger offen bleibt
-        const days=daysUntilReset();
-        const dayText=days===1?t("inDay"):t("inDays").replace("{n}",days);
-        document.getElementById("dateLine").textContent =
-          `${t("today")}: ${formatDate(new Date())} · ${t("nextReset")}: ${formatDate(nextResetDate())} (${dayText})`;
-      }
-    }
-
-    let state=loadState();
-    autoResetIfNeeded();
-    render();
-
-    const fuelDialog=document.getElementById("fuelDialog");
-    const resetDialog=document.getElementById("resetDialog");
-    const settingsDialog=document.getElementById("settingsDialog");
-
-    document.getElementById("fuelBtn").onclick=()=>{
-      document.getElementById("fuelInput").value="";
-      fuelDialog.showModal();
-      setTimeout(()=>document.getElementById("fuelInput").focus(),50);
-    };
-    document.getElementById("confirmFuel").onclick=()=>{
-      const raw=document.getElementById("fuelInput").value.replace(",",".");
-      const liters=Number(raw);
-      if(!Number.isFinite(liters)||liters<=0){toast(t("invalid"));return;}
-      state.remaining=Math.max(0,+(state.remaining-liters).toFixed(1));
-      state.history.unshift({type:"fuel",liters:+liters.toFixed(1),remainingAfter:state.remaining,date:new Date().toISOString()});
-      saveState();render();fuelDialog.close();
-      toast(t("availableToast").replace("{n}",fmt(state.remaining)));
-    };
-    document.getElementById("resetBtn").onclick=()=>resetDialog.showModal();
-    document.getElementById("confirmReset").onclick=()=>{
-      state.remaining=state.allowance;
-      state.monthKey=currentMonthKey();
-      state.history.unshift({type:"reset",liters:state.allowance,date:new Date().toISOString(),automatic:false});
-      saveState();render();resetDialog.close();
-      toast(t("resetToast").replace("{n}",fmt(state.allowance)));
-    };
-    document.getElementById("settingsBtn").onclick=()=>{
-      document.getElementById("allowanceInput").value=state.allowance;
-      document.getElementById("langSelect").value=state.lang;
-      settingsDialog.showModal();
-    };
-    document.getElementById("saveSettings").onclick=()=>{
-      const val=Number(document.getElementById("allowanceInput").value);
-      if(!Number.isFinite(val)||val<=0){toast(t("invalid"));return;}
-      state.allowance=+val.toFixed(1);
-      state.lang=document.getElementById("langSelect").value==="fr"?"fr":"de";
-      saveState();render();settingsDialog.close();
-      toast(t("settingsSaved"));
-    };
-
-    document.querySelectorAll("[data-close]").forEach(btn=>{
-      btn.addEventListener("click",()=>document.getElementById(btn.dataset.close).close());
-    });
-
-    document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkMonth(); });
-    setInterval(checkMonth,60000);
-
-    if("serviceWorker" in navigator){
-      window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));
-    }
-  </script>
-</body>
-</html>
+  <main id="settingsScreen" class="screen">
+    <div class="backbar"><button class="back" data-back>‹</button><h1 data-i="settings">Einstellungen</h1></div>
+    <div class="section card"><div class="section-title" data-i="language">Sprache</div><div class="option" id="langDe"><div><b>Deutsch</b><div class="muted">Alle Texte auf Deutsch</div></div><div class="radio"></div></div><div class="option" id="langFr"><div><b>Français</b><div class="muted">Tous les textes en français</div></div><div class="radio"></div></div></div>
+    <div class="section card"><div class="section-title" data-i="monthlyLimit">Monatslimit</div><div class="inputwrap"><input id="allowanceInput" type="number" min="1" step="1" inputmode="numeric"><span class="unit">L</span></div><p class="muted" id="currentLimitText"></p><button class="save" style="width:100%" id="saveAllowance" data-i="save">Speichern</button></div>
+    <div class="section"><div class="section-title" data-i="information">Informationen</div><div class="card"><div class="row"><div class="ico">🗓️</div><div><b data-i="autoReset">Automatischer Reset</b><div class="muted" data-i="autoResetSub">Am 01. jedes Monats</div></div></div><div class="divider"></div><div class="row"><div class="ico">◉</div><div><b data-i="localHistory">Lokale Historie</b><div class="muted" data-i="localHistorySub">Deine Daten werden nur auf diesem Gerät gespeichert</div></div></div></div></div>
+    <div class="section"><div class="section-title" data-i="about">Über</div><div class="card about"><img src="./icon-192.png" alt=""><div><div class="name">FuelCard v4.0</div><div class="muted">Made by Yannick</div></div></div></div>
+    <button class="dangerBtn" id="manualReset" data-i="manualReset">Monatsreset jetzt durchführen</button>
+    <div class="footer">Made by Yannick <span class="heart">♡</span></div>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="modalbox"><h3 id="modalTitle"></h3><p id="modalText"></p><div class="modal-actions"><button class="cancel" id="modalCancel" data-i="cancel">Abbrechen</button><button class="ok" id="modalOk">OK</button></div></div></div>
+<script>
+const KEY='fuelcard_state_v1';
+const I18N={
+ de:{subtitle:'Deine Tankkarte im Blick',settings:'Einstellungen',available:'Verfügbare Liter',fuel:'Tanken',monthOverview:'Monatsübersicht',monthlyLimit:'Monatslimit',used:'Verbraucht',today:'Heute',nextReset:'Nächster Reset',history:'Tankhistorie',howMuch:'Wie viel Liter hast du getankt?',currentlyAvailable:'Verfügbare Liter',cancel:'Abbrechen',save:'Speichern',previewTitle:'Neue Übersicht nach dem Tanken',availableShort:'Verfügbar',percent:'Prozent',hint:'Hinweis',language:'Sprache',information:'Informationen',autoReset:'Automatischer Reset',autoResetSub:'Am 01. jedes Monats',localHistory:'Lokale Historie',localHistorySub:'Deine Daten werden nur auf diesem Gerät gespeichert',about:'Über',manualReset:'Monatsreset jetzt durchführen',days:n=>`in ${n} Tag${n===1?'':'en'}`,resetHint:d=>`Dein Monatslimit wird am ${d} automatisch zurückgesetzt.`,emptyTitle:'Bisher keine Tankvorgänge',emptySub:'Deine Tankungen werden hier angezeigt',fuelHist:l=>`${l} L getankt`,resetHist:'Monatslimit zurückgesetzt',auto:'automatisch',manual:'manuell',invalid:'Bitte gib eine gültige Literzahl ein.',tooMuch:(r)=>`Du hast nur noch ${r} L verfügbar. Der Tankvorgang wurde nicht gespeichert.`,limitTitle:'⛽ Monatslimit erreicht',limitText:(a,d)=>`Deine ${a} L sind für diesen Monat aufgebraucht. Die Tankkarte wird am ${d} automatisch zurückgesetzt.`,resetTitle:'Monatsreset bestätigen',resetText:a=>`Möchtest du die Tankkarte wirklich auf ${a} L zurücksetzen?`,resetDone:'Monatslimit wurde zurückgesetzt.',saved:'Tankvorgang gespeichert.',limitSaved:a=>`Monatslimit auf ${a} L geändert.`,currentLimit:a=>`Aktuelles Limit: ${a} L pro Monat`},
+ fr:{subtitle:'Votre carte carburant en un coup d’œil',settings:'Paramètres',available:'Litres disponibles',fuel:'Faire le plein',monthOverview:'Aperçu mensuel',monthlyLimit:'Limite mensuelle',used:'Consommé',today:"Aujourd’hui",nextReset:'Prochaine remise à zéro',history:'Historique',howMuch:'Combien de litres avez-vous pris ?',currentlyAvailable:'Litres disponibles',cancel:'Annuler',save:'Enregistrer',previewTitle:'Nouvel aperçu après le plein',availableShort:'Disponible',percent:'Pourcentage',hint:'Information',language:'Langue',information:'Informations',autoReset:'Remise à zéro automatique',autoResetSub:'Le 01 de chaque mois',localHistory:'Historique local',localHistorySub:'Vos données sont enregistrées uniquement sur cet appareil',about:'À propos',manualReset:'Réinitialiser le mois maintenant',days:n=>`dans ${n} jour${n===1?'':'s'}`,resetHint:d=>`Votre limite mensuelle sera remise à zéro automatiquement le ${d}.`,emptyTitle:'Aucun plein pour le moment',emptySub:'Vos pleins apparaîtront ici',fuelHist:l=>`${l} L ajoutés`,resetHist:'Limite mensuelle réinitialisée',auto:'automatique',manual:'manuel',invalid:'Veuillez saisir un nombre de litres valide.',tooMuch:r=>`Il ne vous reste que ${r} L disponibles. Le plein n’a pas été enregistré.`,limitTitle:'⛽ Limite mensuelle atteinte',limitText:(a,d)=>`Vos ${a} L sont épuisés pour ce mois. La carte sera remise à zéro automatiquement le ${d}.`,resetTitle:'Confirmer la remise à zéro',resetText:a=>`Voulez-vous vraiment remettre la carte à ${a} L ?`,resetDone:'La limite mensuelle a été réinitialisée.',saved:'Plein enregistré.',limitSaved:a=>`Limite mensuelle modifiée à ${a} L.`,currentLimit:a=>`Limite actuelle : ${a} L par mois`}
+};
+const def={allowance:150,remaining:150,monthKey:null,history:[],lang:'de'};
+let state={...def}; try{state={...def,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){}
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function tr(k,...a){const v=I18N[state.lang][k];return typeof v==='function'?v(...a):v}
+function keyMonth(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
+function nextReset(){const d=new Date();return new Date(d.getFullYear(),d.getMonth()+1,1)}
+function fmtDate(d){return new Intl.DateTimeFormat(state.lang==='fr'?'fr-FR':'de-DE',{day:'2-digit',month:'long',year:'numeric'}).format(d)}
+function daysLeft(){const a=new Date(),b=nextReset();const x=new Date(a.getFullYear(),a.getMonth(),a.getDate()),y=new Date(b.getFullYear(),b.getMonth(),b.getDate());return Math.max(0,Math.round((y-x)/86400000))}
+function num(v){return new Intl.NumberFormat(state.lang==='fr'?'fr-FR':'de-DE',{maximumFractionDigits:1}).format(v)}
+function autoReset(){const k=keyMonth();if(state.monthKey!==k){state.remaining=state.allowance;state.monthKey=k;state.history.unshift({type:'reset',liters:state.allowance,date:new Date().toISOString(),automatic:true});save();return true}return false}
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);render()}
+function toast(s){const el=document.getElementById('toast');el.textContent=s;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200)}
+let modalCb=null;function modal(title,text,okText='OK',cb=null,showCancel=false){modalCb=cb;modalTitle.textContent=title;modalText.textContent=text;modalOk.textContent=okText;modalCancel.style.display=showCancel?'inline-block':'none';document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show');modalCb=null}
+function pct(){return state.allowance>0?Math.max(0,Math.min(100,Math.round(state.remaining/state.allowance*100))):0}
+function render(){
+ document.documentElement.lang=state.lang;document.querySelectorAll('[data-i]').forEach(el=>{const k=el.dataset.i;if(I18N[state.lang][k]&&typeof I18N[state.lang][k]!=='function')el.textContent=I18N[state.lang][k]});
+ remaining.textContent=num(state.remaining);allowance.textContent=num(state.allowance);used.textContent=num(Math.max(0,state.allowance-state.remaining));percent.textContent=pct();ring.style.setProperty('--p',pct());
+ todayDate.textContent=fmtDate(new Date());resetDate.textContent=fmtDate(nextReset());daysLeft.textContent=tr('days',daysLeft());
+ availableBefore.textContent=num(state.remaining);previewRemaining.textContent=num(state.remaining);previewPercent.textContent=pct();resetHint.textContent=tr('resetHint',fmtDate(nextReset()));
+ allowanceInput.value=state.allowance;currentLimitText.textContent=tr('currentLimit',num(state.allowance));langDe.classList.toggle('active',state.lang==='de');langFr.classList.toggle('active',state.lang==='fr');
+ renderHistory(); updatePreview();
+}
+function renderHistory(){historyList.innerHTML='';if(!state.history.length){historyList.innerHTML=`<div class="card hist"><div class="hist-main"><div class="hist-icon">◷</div><div><div class="hist-title">${tr('emptyTitle')}</div><div class="hist-sub">${tr('emptySub')}</div></div></div></div>`;return}state.history.slice(0,12).forEach(h=>{const d=new Date(h.date);const title=h.type==='fuel'?tr('fuelHist',num(h.liters)):tr('resetHist');const sub=new Intl.DateTimeFormat(state.lang==='fr'?'fr-FR':'de-DE',{dateStyle:'medium',timeStyle:'short'}).format(d)+(h.type==='reset'?` · ${h.automatic?tr('auto'):tr('manual')}`:'');const val=h.type==='fuel'?`−${num(h.liters)} L`:`${num(h.liters)} L`;historyList.insertAdjacentHTML('beforeend',`<div class="card hist"><div class="hist-main"><div class="hist-icon">${h.type==='fuel'?'⛽':'↻'}</div><div><div class="hist-title">${title}</div><div class="hist-sub">${sub}</div></div></div><div class="hist-val">${val}</div></div>`)});}
+function updatePreview(){const l=parseFloat((fuelInput.value||'').replace(',','.'))||0;const r=Math.max(0,state.remaining-l);previewRemaining.textContent=num(r);previewPercent.textContent=state.allowance?Math.round(r/state.allowance*100):0}
+openSettings.onclick=()=>show('settingsScreen');openFuel.onclick=()=>{fuelInput.value='';show('fuelScreen');fuelInput.focus()};document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>show('home'));
+fuelInput.addEventListener('input',updatePreview);
+saveFuel.onclick=()=>{const l=parseFloat((fuelInput.value||'').replace(',','.'));if(!isFinite(l)||l<=0){toast(tr('invalid'));return}if(l>state.remaining+1e-9){modal('⚠️',tr('tooMuch',num(state.remaining)));return}state.remaining=Math.max(0,+(state.remaining-l).toFixed(1));state.history.unshift({type:'fuel',liters:+l.toFixed(1),remainingAfter:state.remaining,date:new Date().toISOString()});save();render();show('home');toast(tr('saved'));if(state.remaining<=0){setTimeout(()=>modal(tr('limitTitle'),tr('limitText',num(state.allowance),fmtDate(nextReset()))),250)}};
+langDe.onclick=()=>{state.lang='de';save();render()};langFr.onclick=()=>{state.lang='fr';save();render()};
+saveAllowance.onclick=()=>{const a=parseFloat(allowanceInput.value);if(!isFinite(a)||a<=0){toast(tr('invalid'));return}const used=Math.max(0,state.allowance-state.remaining);state.allowance=+a.toFixed(1);state.remaining=Math.max(0,+(state.allowance-used).toFixed(1));save();render();toast(tr('limitSaved',num(state.allowance)))};
+manualReset.onclick=()=>modal(tr('resetTitle'),tr('resetText',num(state.allowance)),'OK',()=>{state.remaining=state.allowance;state.monthKey=keyMonth();state.history.unshift({type:'reset',liters:state.allowance,date:new Date().toISOString(),automatic:false});save();closeModal();render();toast(tr('resetDone'))},true);
+modalCancel.onclick=closeModal;modalOk.onclick=()=>{if(modalCb){const cb=modalCb;cb()}else closeModal()};document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+autoReset();render();document.addEventListener('visibilitychange',()=>{if(!document.hidden&&autoReset())render()});setInterval(()=>{if(autoReset())render()},60000);
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>

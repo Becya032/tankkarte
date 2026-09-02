@@ -1,16 +1,8 @@
-FuelCard v3
+FuelCard v4.0
 
-Neu:
-- Deutsch / Français in Einstellungen
-- Tagesdatum sichtbar
-- nächster Monatsreset + verbleibende Tage sichtbar
-- automatischer Monatsreset beim Monatswechsel
-- falls die App am 1. offen ist: Prüfung jede Minute
-- Prozentanzeige
-- Made by Yannick
-- blau/lila Neon-Farbschema
-- bestehende lokalen Liter-/Historien-Daten bleiben erhalten (gleicher localStorage-Key)
+Neue dunkle iPhone-Optik mit Blau/Violett-Verlauf, Dashboard, Tankmaske und Einstellungen.
+DE/FR, automatischer Monatsreset, Datum, Historie und lokaler Speicher bleiben erhalten.
+Bei 0 L erscheint eine Monatslimit-Meldung. Tankvorgaenge ueber dem Restlimit werden blockiert.
+Das App-Icon wurde staerker zugeschnitten, damit der weisse Rand auf iOS verschwindet.
 
-Hinweis zum Logo:
-Die aktuell mitgelieferten icon-192.png / icon-512.png sind Platzhalter.
-Für das EXAKTE Logo aus dem ChatGPT-Share-Link bitte das Logo als PNG/JPG hochladen.
+Wichtig: Bestehende Daten bleiben durch localStorage-Key fuelcard_state_v1 erhalten.
