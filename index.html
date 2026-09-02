@@ -8,8 +8,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="FuelCard" />
   <title>FuelCard</title>
-  <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <link rel="manifest" href="./manifest.webmanifest?v=4.1" />
+  <link rel="apple-touch-icon" href="./icon-192.png?v=4.1" />
   <style>
     :root{--bg:#06111f;--bg2:#081827;--card:#0d1b2a;--card2:#101f30;--line:#203247;--text:#f7fbff;--muted:#9eb0c3;--cyan:#19c9ff;--blue:#1678ff;--violet:#6b37ff;--pink:#d313e7;--green:#56e0a3;--danger:#ff6178}
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -27,9 +27,9 @@
     .ring{position:absolute;right:24px;top:28px;width:112px;height:112px;border-radius:50%;background:conic-gradient(#59efff calc(var(--p)*1%),rgba(255,255,255,.26) 0);padding:12px;display:grid;place-items:center}.ring:before{content:"";position:absolute;inset:12px;border-radius:50%;background:#1930b9}.ring img{position:relative;width:56px;height:56px;border-radius:12px}
     .primary{width:100%;border:0;border-radius:14px;padding:17px 18px;margin:16px 0 22px;color:#fff;font-size:20px;font-weight:800;background:linear-gradient(90deg,#12bcff,#1479ff 45%,#7430ff 74%,#d40cc8);box-shadow:0 12px 26px rgba(50,65,255,.18)}
     h2{font-size:19px;margin:0 0 12px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:linear-gradient(180deg,rgba(15,31,48,.96),rgba(9,24,38,.96));border:1px solid var(--line);border-radius:16px;padding:16px}.metric{text-align:center}.metric .label{color:#c4d0dc;font-size:14px}.metric .value{font-size:25px;font-weight:800;margin-top:6px}
-    .datecard{display:grid;grid-template-columns:1fr 1fr;margin-top:12px;gap:0}.dateitem{display:flex;gap:10px;align-items:center;min-height:72px}.dateitem+ .dateitem{border-left:1px solid var(--line);padding-left:16px}.dateitem small{color:#b8c6d4;display:block;margin-bottom:3px}.dateitem b{font-size:17px}.dateitem .blue{color:#21a8ff;margin-top:4px;font-size:14px}
-    .history{margin-top:22px}.history-list{display:flex;flex-direction:column;gap:10px}.hist{display:flex;align-items:center;justify-content:space-between;gap:12px}.hist-main{display:flex;gap:12px;align-items:center}.hist-icon{width:38px;height:38px;border:1px solid #39506a;border-radius:50%;display:grid;place-items:center;color:#d7e6f6}.hist-title{font-weight:700}.hist-sub{font-size:13px;color:var(--muted);margin-top:3px}.hist-val{font-weight:800}.empty{color:var(--muted);font-size:14px}
-    .footer{text-align:center;color:#b4c0cd;margin:28px 0 4px;font-size:14px}.heart{color:#d43af0;font-size:19px}
+    .datecard{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);margin-top:12px;gap:0;overflow:hidden}.dateitem{display:flex;gap:10px;align-items:center;min-height:78px;min-width:0}.dateitem+ .dateitem{border-left:1px solid var(--line);padding-left:16px}.date-emoji{flex:0 0 auto;font-size:22px}.date-copy{min-width:0}.dateitem small{color:#b8c6d4;display:block;margin-bottom:3px;line-height:1.15}.dateitem b{display:block;font-size:16px;line-height:1.22;overflow-wrap:normal;word-break:normal}.dateitem .blue{color:#21a8ff;margin-top:4px;font-size:13px;line-height:1.2}
+    .history{margin-top:24px}.history>h2{margin-bottom:12px}.history-list{display:flex;flex-direction:column;gap:10px}.hist{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px}.hist-main{display:flex;gap:12px;align-items:center;min-width:0}.hist-main>div:last-child{min-width:0}.hist-icon{width:38px;height:38px;flex:0 0 38px;border:1px solid #39506a;border-radius:50%;display:grid;place-items:center;color:#d7e6f6}.hist-title{font-weight:700;line-height:1.2}.hist-sub{font-size:13px;color:var(--muted);margin-top:3px;line-height:1.3}.hist-val{font-weight:800;white-space:nowrap;text-align:right;font-size:16px}.empty{color:var(--muted);font-size:14px}
+    .footer{clear:both;text-align:center;color:#b4c0cd;margin:30px auto 4px;font-size:14px;width:100%}.heart{color:#d43af0;font-size:19px}
     .backbar{display:flex;align-items:center;gap:16px;border-bottom:1px solid #1c2b3b;padding-bottom:18px;margin-bottom:18px}.back{font-size:32px;background:none;border:0;color:#19bfff;padding:0}.backbar h1{font-size:27px;margin:0}
     .section{margin-bottom:14px}.section-title{font-size:17px;font-weight:800;margin:0 0 10px}.fieldlabel{text-align:center;font-size:18px;font-weight:700;margin:8px 0 16px}.inputwrap{display:flex;align-items:center;border:1px solid #3c5d82;border-radius:12px;background:#0b1826;padding:0 14px}.inputwrap input,.inputwrap select{width:100%;background:transparent;border:0;outline:0;color:#fff;padding:14px 0;font-size:24px;font-weight:700}.unit{color:#c2d0db;font-size:18px}.muted{color:var(--muted)}
     .actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.secondary,.save{border:0;border-radius:12px;padding:15px;font-weight:750;color:#fff}.secondary{background:#172639}.save{background:linear-gradient(90deg,#1598ff,#6c2eff,#d30bc8)}
@@ -38,18 +38,30 @@
     .option{display:flex;justify-content:space-between;align-items:center;border:1px solid #334a63;border-radius:12px;padding:14px;margin-top:10px}.option.active{border-color:#a438ff;box-shadow:inset 0 0 0 1px #0ebcff;background:linear-gradient(90deg,rgba(18,150,255,.08),rgba(208,12,200,.08))}.radio{width:20px;height:20px;border-radius:50%;border:2px solid #5f7286}.option.active .radio{border:6px solid #7c48ff;background:#19bfff}.about{display:flex;gap:12px;align-items:center}.about img{width:52px;height:52px;border-radius:13px}.about .name{color:#6e9fff;font-weight:800}.row{display:flex;gap:12px;align-items:flex-start}.row+.row{margin-top:18px}.row .ico{font-size:24px;width:32px}.divider{height:1px;background:#1f3043;margin:14px 0}.dangerBtn{width:100%;border:1px solid #744052;background:#29151e;color:#ff9daf;padding:13px;border-radius:12px;font-weight:750}
     .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;transition:.25s;background:#142438;border:1px solid #38536d;color:#fff;padding:12px 16px;border-radius:12px;max-width:90%;z-index:20}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
     .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.58);padding:20px;z-index:50}.modal.show{display:flex}.modalbox{max-width:420px;width:100%;background:#0b1826;border:1px solid #31455b;border-radius:18px;padding:20px;box-shadow:0 25px 80px rgba(0,0,0,.45)}.modalbox h3{margin:0 0 8px;font-size:22px}.modalbox p{color:#c3cfdb;line-height:1.45}.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}.modal-actions button{border:0;border-radius:10px;padding:11px 14px;font-weight:700}.ok{background:linear-gradient(90deg,#178aff,#7d32ff);color:#fff}.cancel{background:#1c2b3b;color:#fff}
-    @media(max-width:390px){.remaining{font-size:50px}.ring{width:96px;height:96px;right:18px}.ring img{width:48px;height:48px}.app{padding-left:14px;padding-right:14px}}
+    @media(max-width:430px){
+      .app{padding:18px 16px 28px}
+      .topbar{gap:10px;margin-bottom:16px}.title h1{font-size:31px}.subtitle{font-size:15px}.iconbtn{padding:11px 12px;border-radius:13px;font-size:14px;white-space:nowrap}
+      .hero{padding:22px 20px}.hero-label{font-size:19px}.remaining{font-size:52px;letter-spacing:-1.6px}.pct{font-size:24px}.ring{width:102px;height:102px;right:18px;top:30px;padding:11px}.ring:before{inset:11px}.ring img{width:50px;height:50px}
+      .primary{font-size:19px;padding:16px;margin:14px 0 22px}
+      .card{padding:14px}.metric .label{font-size:13px}.metric .value{font-size:23px}
+      .datecard{grid-template-columns:minmax(0,1.45fr) minmax(132px,.85fr);padding:14px 12px}.dateitem{gap:8px;min-height:76px}.dateitem+ .dateitem{padding-left:12px}.date-emoji{font-size:20px}.dateitem b{font-size:15px}.dateitem .blue{font-size:12px}
+      .history{margin-top:22px}.hist{padding:14px 13px;gap:9px}.hist-main{gap:9px}.hist-icon{width:36px;height:36px;flex-basis:36px}.hist-title{font-size:15px}.hist-sub{font-size:12.5px}.hist-val{font-size:15px}
+    }
+    @media(max-width:370px){
+      .app{padding-left:12px;padding-right:12px}.title h1{font-size:29px}.subtitle{font-size:14px}.iconbtn{font-size:13px;padding:10px}.hero{padding-left:18px;padding-right:18px}.remaining{font-size:47px}.ring{width:92px;height:92px;right:15px}.ring img{width:45px;height:45px}
+      .datecard{grid-template-columns:1fr;gap:0}.dateitem+ .dateitem{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:12px;margin-top:8px}.dateitem{min-height:60px}.dateitem b{font-size:15px}
+    }
   </style>
 </head>
 <body>
 <div class="app">
   <main id="home" class="screen active">
     <div class="topbar"><div class="title"><h1>FuelCard</h1><div class="subtitle" data-i="subtitle">Deine Tankkarte im Blick</div></div><button class="iconbtn" id="openSettings">⚙ <span data-i="settings">Einstellungen</span></button></div>
-    <section class="hero"><div class="hero-label" data-i="available">Verfügbare Liter</div><div class="remaining"><span id="remaining">150</span> L</div><div class="pct"><span id="percent">100</span> %</div><div class="ring" id="ring"><img src="./icon-192.png" alt="FuelCard"></div></section>
+    <section class="hero"><div class="hero-label" data-i="available">Verfügbare Liter</div><div class="remaining"><span id="remaining">150</span> L</div><div class="pct"><span id="percent">100</span> %</div><div class="ring" id="ring"><img src="./icon-192.png?v=4.1" alt="FuelCard"></div></section>
     <button class="primary" id="openFuel">⛽ <span data-i="fuel">Tanken</span></button>
     <h2 data-i="monthOverview">Monatsübersicht</h2>
     <div class="grid2"><div class="card metric"><div class="label" data-i="monthlyLimit">Monatslimit</div><div class="value"><span id="allowance">150</span> L</div></div><div class="card metric"><div class="label" data-i="used">Verbraucht</div><div class="value"><span id="used">0</span> L</div></div></div>
-    <div class="card datecard"><div class="dateitem"><div>🗓️</div><div><small data-i="today">Heute</small><b id="todayDate"></b></div></div><div class="dateitem"><div>🔄</div><div><small data-i="nextReset">Nächster Reset</small><b id="resetDate"></b><div class="blue" id="daysLeft"></div></div></div>
+    <div class="card datecard"><div class="dateitem"><div class="date-emoji">🗓️</div><div class="date-copy"><small data-i="today">Heute</small><b id="todayDate"></b></div></div><div class="dateitem"><div class="date-emoji">🔄</div><div class="date-copy"><small data-i="nextReset">Nächster Reset</small><b id="resetDate"></b><div class="blue" id="daysLeft"></div></div></div></div>
     <section class="history"><h2 data-i="history">Tankhistorie</h2><div class="history-list" id="historyList"></div></section>
     <div class="footer">Made by Yannick <span class="heart">♡</span></div>
   </main>
@@ -67,7 +79,7 @@
     <div class="section card"><div class="section-title" data-i="language">Sprache</div><div class="option" id="langDe"><div><b>Deutsch</b><div class="muted">Alle Texte auf Deutsch</div></div><div class="radio"></div></div><div class="option" id="langFr"><div><b>Français</b><div class="muted">Tous les textes en français</div></div><div class="radio"></div></div></div>
     <div class="section card"><div class="section-title" data-i="monthlyLimit">Monatslimit</div><div class="inputwrap"><input id="allowanceInput" type="number" min="1" step="1" inputmode="numeric"><span class="unit">L</span></div><p class="muted" id="currentLimitText"></p><button class="save" style="width:100%" id="saveAllowance" data-i="save">Speichern</button></div>
     <div class="section"><div class="section-title" data-i="information">Informationen</div><div class="card"><div class="row"><div class="ico">🗓️</div><div><b data-i="autoReset">Automatischer Reset</b><div class="muted" data-i="autoResetSub">Am 01. jedes Monats</div></div></div><div class="divider"></div><div class="row"><div class="ico">◉</div><div><b data-i="localHistory">Lokale Historie</b><div class="muted" data-i="localHistorySub">Deine Daten werden nur auf diesem Gerät gespeichert</div></div></div></div></div>
-    <div class="section"><div class="section-title" data-i="about">Über</div><div class="card about"><img src="./icon-192.png" alt=""><div><div class="name">FuelCard v4.0</div><div class="muted">Made by Yannick</div></div></div></div>
+    <div class="section"><div class="section-title" data-i="about">Über</div><div class="card about"><img src="./icon-192.png?v=4.1" alt=""><div><div class="name">FuelCard v4.1</div><div class="muted">Made by Yannick</div></div></div></div>
     <button class="dangerBtn" id="manualReset" data-i="manualReset">Monatsreset jetzt durchführen</button>
     <div class="footer">Made by Yannick <span class="heart">♡</span></div>
   </main>

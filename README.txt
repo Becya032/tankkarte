@@ -1,8 +1,12 @@
-FuelCard v4.0
+FuelCard v4.1
 
-Neue dunkle iPhone-Optik mit Blau/Violett-Verlauf, Dashboard, Tankmaske und Einstellungen.
-DE/FR, automatischer Monatsreset, Datum, Historie und lokaler Speicher bleiben erhalten.
-Bei 0 L erscheint eine Monatslimit-Meldung. Tankvorgaenge ueber dem Restlimit werden blockiert.
-Das App-Icon wurde staerker zugeschnitten, damit der weisse Rand auf iOS verschwindet.
+iPhone-Layout-Korrektur:
+- Tankhistorie ist jetzt eine eigene Sektion und nicht mehr versehentlich in der Datumskarte.
+- "Made by Yannick" steht wieder sauber zentriert ganz unten.
+- Datum und naechster Reset sind fuer iPhone-Breiten optimiert.
+- Historienwerte wie -25 L bleiben in einer Zeile.
+- Bessere Responsive-Regeln fuer kleine iPhones.
+- Cache-Version auf v4.1 erhoeht, damit GitHub Pages/Safari das Update schneller uebernimmt.
 
-Wichtig: Bestehende Daten bleiben durch localStorage-Key fuelcard_state_v1 erhalten.
+Alle bisherigen Funktionen bleiben erhalten: DE/FR, Monatsreset, 0-L-Warnung, Limit-Schutz und Historie.
+Bestehende Nutzerdaten bleiben durch localStorage-Key fuelcard_state_v1 erhalten.
