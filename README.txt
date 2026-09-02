@@ -1,21 +1,16 @@
-FuelCard PWA
+FuelCard v3
 
-Enthalten:
-- index.html
-- manifest.webmanifest
-- sw.js
-- icon-192.png
-- icon-512.png
+Neu:
+- Deutsch / Français in Einstellungen
+- Tagesdatum sichtbar
+- nächster Monatsreset + verbleibende Tage sichtbar
+- automatischer Monatsreset beim Monatswechsel
+- falls die App am 1. offen ist: Prüfung jede Minute
+- Prozentanzeige
+- Made by Yannick
+- blau/lila Neon-Farbschema
+- bestehende lokalen Liter-/Historien-Daten bleiben erhalten (gleicher localStorage-Key)
 
-Funktionen:
-- Restliter groß anzeigen
-- Tanken und automatisch abziehen
-- Manueller Monatsreset mit Sicherheitsabfrage
-- Automatischer Reset beim ersten Öffnen in einem neuen Monat
-- Frei einstellbares Monatslimit
-- Tankhistorie
-- Lokale Speicherung auf dem Gerät
-- Installierbar auf iPhone/Android als PWA
-
-Wichtig:
-Eine PWA muss über HTTPS gehostet werden, damit Installation und Offline-Modus zuverlässig funktionieren.
+Hinweis zum Logo:
+Die aktuell mitgelieferten icon-192.png / icon-512.png sind Platzhalter.
+Für das EXAKTE Logo aus dem ChatGPT-Share-Link bitte das Logo als PNG/JPG hochladen.
